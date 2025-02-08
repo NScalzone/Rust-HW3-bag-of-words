@@ -14,5 +14,7 @@ fn main() {
     }
     else{
         println!("bag is not empty");
+        println!("there are {} words in the bag", my_bag.len());
+        println!("total word count is: {}", my_bag.count());
     }
 }

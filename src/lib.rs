@@ -127,7 +127,12 @@ impl<'a> Bbow<'a> {
     /// assert_eq!(3, bbow.count());
     /// ```
     pub fn count(&self) -> usize {
-        todo!()
+        let mut total = 0;
+        for value in self.0.values(){
+            println!("{}",value);
+            total += value;
+        }
+        total
     }
 
     /// Count the number of unique words contained in this BBOW,
@@ -142,7 +147,7 @@ impl<'a> Bbow<'a> {
     /// assert_eq!(2, bbow.len());
     /// ```
     pub fn len(&self) -> usize {
-        todo!()
+        self.0.len()
     }
 
     /// Is this BBOW empty?
