@@ -3,7 +3,7 @@ use bbow::Bbow;
 fn main() {
     // println!("Hello")
     let mut my_bag = Bbow::new();
-    my_bag = my_bag.extend_from_text("This is a te'st string");
+    my_bag = my_bag.extend_from_text("This is a te'st string test string test string");
     for key in my_bag.words(){
         println!("Key: {}", key);   
     }

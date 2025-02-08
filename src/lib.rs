@@ -78,11 +78,13 @@ impl<'a> Bbow<'a> {
                     //     self[lower] += 1;
                     // }
                     
-                    self.0.insert(lower.into(), 1);
+                    // self.0.insert(lower.into(), 1);
+                    self.0.entry(lower.into()).and_modify(|curr| *curr += 1).or_insert(1);
                     
                 }
                 else {
-                    self.0.insert(part.into(), 1);
+                    // self.0.insert(part.into(), 1);
+                    self.0.entry(part.into()).and_modify(|curr| *curr += 1).or_insert(1);
                 }
             }
             
