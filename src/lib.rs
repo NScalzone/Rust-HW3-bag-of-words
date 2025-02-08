@@ -74,16 +74,10 @@ impl<'a> Bbow<'a> {
                     println!("Is uppercase");
                     let lower = part.to_lowercase();
                     println!("{}",lower);
-                    // if self.0.contains_key(&lower){
-                    //     self[lower] += 1;
-                    // }
-                    
-                    // self.0.insert(lower.into(), 1);
+                    // This line of code was derived from the example at https://doc.rust-lang.org/std/collections/struct.BTreeMap.html#method.entry
                     self.0.entry(lower.into()).and_modify(|curr| *curr += 1).or_insert(1);
-                    
                 }
                 else {
-                    // self.0.insert(part.into(), 1);
                     self.0.entry(part.into()).and_modify(|curr| *curr += 1).or_insert(1);
                 }
             }
