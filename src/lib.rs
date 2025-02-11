@@ -7,7 +7,7 @@
 //! This implementation uses zero-copy strings when
 //! reasonably possible to improve performance and reduce
 //! memory usage.
-//! 
+//!
 //! Words are separated by whitespace, and consist of a
 //! span of one or more consecutive letters (any Unicode
 //! code point in the "letter" class) with no internal
@@ -69,19 +69,23 @@ impl<'a> Bbow<'a> {
         let string_parts = target.split_whitespace();
         for part in string_parts {
             if is_word(part) {
-                println!("Yes, this is a word: {}",part);
+                println!("Yes, this is a word: {}", part);
                 if has_uppercase(part) {
                     println!("Is uppercase");
                     let lower = part.to_lowercase();
-                    println!("{}",lower);
+                    println!("{}", lower);
                     // This line of code was derived from the example at https://doc.rust-lang.org/std/collections/struct.BTreeMap.html#method.entry
-                    self.0.entry(lower.into()).and_modify(|curr| *curr += 1).or_insert(1);
-                }
-                else {
-                    self.0.entry(part.into()).and_modify(|curr| *curr += 1).or_insert(1);
+                    self.0
+                        .entry(lower.into())
+                        .and_modify(|curr| *curr += 1)
+                        .or_insert(1);
+                } else {
+                    self.0
+                        .entry(part.into())
+                        .and_modify(|curr| *curr += 1)
+                        .or_insert(1);
                 }
             }
-            
         }
 
         self
@@ -102,12 +106,13 @@ impl<'a> Bbow<'a> {
     /// assert_eq!(3, bbow.match_count("b"));
     /// ```
     pub fn match_count(&self, keyword: &str) -> usize {
-        // let count = self.0.contains_key(&keyword);
-        // count
-        todo!()
+        // let value = self.0.get(keyword);
+        // let return_value: usize = Some(&value);
+        // return_value
+        self.0[keyword]
     }
 
-    pub fn words(&'a self) -> impl Iterator<Item=&'a str> {
+    pub fn words(&'a self) -> impl Iterator<Item = &'a str> {
         self.0.keys().map(|w| w.as_ref())
     }
 
@@ -124,8 +129,8 @@ impl<'a> Bbow<'a> {
     /// ```
     pub fn count(&self) -> usize {
         let mut total = 0;
-        for value in self.0.values(){
-            println!("{}",value);
+        for value in self.0.values() {
+            println!("{}", value);
             total += value;
         }
         total
