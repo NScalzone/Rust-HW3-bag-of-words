@@ -57,12 +57,13 @@ impl<'a> Bbow<'a> {
     /// multiple texts.
     pub fn extend_from_text(mut self, target: &'a str) -> Self {
         let string_parts = target.split_whitespace();
-        let punctuation: &[_] = &["!", ".", ",", "?", "/", ";", ":"];
+        let punctuation: &[_] = &["!", ".", ",", "?", "/", ";", ":", "'"];
         for parts in string_parts {
             let mut part = parts;
             // I know this is ugly, I tried to get that trim_matches function to work for like half an hour and got annoyed.
             for p in punctuation {
                 part = part.trim_end_matches(p);
+                part = part.trim_start_matches(p);
             }
             if is_word(part) {
                 if has_uppercase(part) {
@@ -139,7 +140,7 @@ mod tests {
     fn test_adding_to_bag() {
         let mut my_bag = Bbow::new();
         my_bag = my_bag.extend_from_text("First three words");
-        my_bag = my_bag.extend_from_text("Next two words");
+        my_bag = my_bag.extend_from_text("Next. two? words,");
         assert_eq!(5, my_bag.len());
     }
 
