@@ -55,25 +55,18 @@ impl<'a> Bbow<'a> {
     /// This is a "builder method": calls can be
     /// conveniently chained to build up a BBOW covering
     /// multiple texts.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// # use bbow::Bbow;
-    /// let bbow = Bbow::new().extend_from_text("Hello world.");
-    /// assert_eq!(2, bbow.len());
-    /// assert_eq!(1, bbow.match_count("hello"));
-    /// ```
     pub fn extend_from_text(mut self, target: &'a str) -> Self {
-        // todo!();
         let string_parts = target.split_whitespace();
-        for part in string_parts {
+        let punctuation: &[_] = &["!", ".", ",", "?", "/", ";", ":"];
+        for parts in string_parts {
+            let mut part = parts;
+            // I know this is ugly, I tried to get that trim_matches function to work for like half an hour and got annoyed.
+            for p in punctuation {
+                part = part.trim_end_matches(p);
+            }
             if is_word(part) {
-                println!("Yes, this is a word: {}", part);
                 if has_uppercase(part) {
-                    println!("Is uppercase");
                     let lower = part.to_lowercase();
-                    println!("{}", lower);
                     // This line of code was derived from the example at https://doc.rust-lang.org/std/collections/struct.BTreeMap.html#method.entry
                     self.0
                         .entry(lower.into())
@@ -96,15 +89,6 @@ impl<'a> Bbow<'a> {
     /// should be lowercase and not contain punctuation, as
     /// per the rules of BBOW: otherwise the keyword will
     /// not match and 0 will be returned.
-    ///
-    /// # Examples:
-    ///
-    /// ```
-    /// # use bbow::Bbow;
-    /// let bbow = Bbow::new()
-    ///     .extend_from_text("b b b-banana b");
-    /// assert_eq!(3, bbow.match_count("b"));
-    /// ```
     pub fn match_count(&self, keyword: &str) -> usize {
         // let value = self.0.get(keyword);
         // let return_value: usize = Some(&value);
@@ -119,14 +103,6 @@ impl<'a> Bbow<'a> {
     /// Count the overall number of words contained in this BBOW:
     /// multiple occurrences are considered separate.
     ///
-    /// # Examples:
-    ///
-    /// ```
-    /// # use bbow::Bbow;
-    /// let bbow = Bbow::new()
-    ///     .extend_from_text("Can't stop this! Stop!");
-    /// assert_eq!(3, bbow.count());
-    /// ```
     pub fn count(&self) -> usize {
         let mut total = 0;
         for value in self.0.values() {
@@ -138,15 +114,6 @@ impl<'a> Bbow<'a> {
 
     /// Count the number of unique words contained in this BBOW,
     /// not considering number of occurrences.
-    ///
-    /// # Examples:
-    ///
-    /// ```
-    /// # use bbow::Bbow;
-    /// let bbow = Bbow::new()
-    ///     .extend_from_text("Can't stop this! Stop!");
-    /// assert_eq!(2, bbow.len());
-    /// ```
     pub fn len(&self) -> usize {
         self.0.len()
     }
@@ -154,5 +121,59 @@ impl<'a> Bbow<'a> {
     /// Is this BBOW empty?
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_extend_from_text() {
+        let mut my_bag = Bbow::new();
+        my_bag = my_bag.extend_from_text("This is a test string for test purposes");
+        assert_eq!(7, my_bag.len());
+    }
+
+    #[test]
+    fn test_adding_to_bag() {
+        let mut my_bag = Bbow::new();
+        my_bag = my_bag.extend_from_text("First three words");
+        my_bag = my_bag.extend_from_text("Next two words");
+        assert_eq!(5, my_bag.len());
+    }
+
+    #[test]
+    fn test_match_count() {
+        let mut my_bag = Bbow::new();
+        my_bag = my_bag.extend_from_text("b b b-banana b");
+        assert_eq!(3, my_bag.match_count("b"));
+    }
+
+    #[test]
+    fn test_len() {
+        let mut my_bag = Bbow::new();
+        my_bag = my_bag.extend_from_text("Can't stop this! Stop!");
+        assert_eq!(2, my_bag.len());
+    }
+
+    #[test]
+    fn test_count() {
+        let mut bbow = Bbow::new();
+        bbow = bbow.extend_from_text("Can't stop this! Stop!");
+        assert_eq!(3, bbow.count());
+    }
+
+    #[test]
+    fn test_is_empty(){
+        let bbow = Bbow::new();
+        assert_eq!(true, bbow.is_empty());
+    }
+
+    #[test]
+    fn test_is_empty_with_words(){
+        let mut bbow = Bbow::new();
+        bbow = bbow.extend_from_text("Now there is something in here");
+        assert_eq!(false, bbow.is_empty());
     }
 }
