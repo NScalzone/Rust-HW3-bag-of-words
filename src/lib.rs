@@ -91,9 +91,6 @@ impl<'a> Bbow<'a> {
     /// per the rules of BBOW: otherwise the keyword will
     /// not match and 0 will be returned.
     pub fn match_count(&self, keyword: &str) -> usize {
-        // let value = self.0.get(keyword);
-        // let return_value: usize = Some(&value);
-        // return_value
         self.0[keyword]
     }
 
@@ -103,7 +100,6 @@ impl<'a> Bbow<'a> {
 
     /// Count the overall number of words contained in this BBOW:
     /// multiple occurrences are considered separate.
-    ///
     pub fn count(&self) -> usize {
         let mut total = 0;
         for value in self.0.values() {
@@ -166,13 +162,13 @@ mod tests {
     }
 
     #[test]
-    fn test_is_empty(){
+    fn test_is_empty() {
         let bbow = Bbow::new();
         assert_eq!(true, bbow.is_empty());
     }
 
     #[test]
-    fn test_is_empty_with_words(){
+    fn test_is_empty_with_words() {
         let mut bbow = Bbow::new();
         bbow = bbow.extend_from_text("Now there is something in here");
         assert_eq!(false, bbow.is_empty());
